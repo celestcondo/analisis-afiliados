@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análisis de Procesos y Mejoras — Afiliados Tiendanube</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #2B2FD4; --blue-bg: #EEF0FF; --dark: #1A1A2E;
+    --g900: #1F2937; --g700: #374151; --g600: #4B5563; --g400: #9CA3AF;
+    --g200: #E5E7EB; --g100: #F3F4F6; --g50: #F9FAFB;
+    --green: #059669; --green-bg: #ECFDF5; --red: #DC2626; --red-bg: #FEF2F2;
+    --amber: #D97706; --amber-bg: #FFFBEB; --purple: #7C3AED; --purple-bg: #F5F3FF;
+    --teal: #0D9488; --teal-bg: #F0FDFA;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'Inter',sans-serif; color:var(--g900); line-height:1.7; font-size:15px; background:var(--g50); -webkit-font-smoothing:antialiased; }
+
+  .nav { position:sticky; top:0; z-index:50; background:rgba(255,255,255,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--g200); padding:0 24px; }
+  .nav-inner { max-width:1000px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:52px; }
+  .nav-brand { font-size:13px; font-weight:700; color:var(--dark); letter-spacing:0.5px; }
+  .nav-links { display:flex; gap:4px; overflow-x:auto; }
+  .nav-links a { text-decoration:none; color:var(--g600); font-size:12px; font-weight:500; padding:6px 12px; border-radius:6px; white-space:nowrap; transition:all 0.2s; }
+  .nav-links a:hover { background:var(--blue-bg); color:var(--blue); }
+
+  .cover { display:flex; flex-direction:column; justify-content:center; min-height:60vh; padding:80px 24px 60px; position:relative; background:linear-gradient(155deg, var(--dark) 0%, #1a1d6b 50%, var(--blue) 100%); color:#fff; overflow:hidden; }
+  .cover::before { content:''; position:absolute; top:-120px; right:-80px; width:450px; height:450px; background:radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%); border-radius:50%; }
+  .cover-bar-top, .cover-bar-left { display:none; }
+  .cover-badge { display:inline-block; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); color:#fff; font-size:11px; font-weight:600; letter-spacing:2.5px; text-transform:uppercase; padding:8px 20px; border-radius:100px; margin-bottom:32px; position:relative; z-index:1; }
+  .cover h1 { font-size:clamp(28px,5vw,44px); font-weight:900; line-height:1.08; color:#fff; margin-bottom:20px; letter-spacing:-1.5px; position:relative; z-index:1; }
+  .cover h1 span { color:#818cf8; display:block; }
+  .cover-sub { font-size:clamp(15px,2vw,18px); color:rgba(255,255,255,0.7); max-width:600px; line-height:1.6; margin-bottom:40px; position:relative; z-index:1; }
+  .cover-meta { display:flex; gap:32px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.12); flex-wrap:wrap; position:relative; z-index:1; }
+  .cover-meta-item { font-size:10px; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1.5px; }
+  .cover-meta-item strong { display:block; color:#fff; font-size:14px; font-weight:600; margin-top:4px; text-transform:none; letter-spacing:0; }
+
+  .section { max-width:1000px; margin:0 auto; padding:56px 24px; }
+  .section + .section { border-top:1px solid var(--g200); }
+  .s-num { font-size:11px; font-weight:700; color:var(--blue); text-transform:uppercase; letter-spacing:3px; margin-bottom:8px; }
+  .s-bar { width:48px; height:3px; background:var(--blue); border-radius:2px; margin-bottom:20px; }
+  h2 { font-size:clamp(22px,3vw,30px); font-weight:800; color:var(--dark); margin-bottom:6px; letter-spacing:-0.5px; }
+  .s-intro { font-size:15px; color:var(--g600); margin-bottom:28px; max-width:90%; line-height:1.7; }
+  h3 { font-size:17px; font-weight:700; color:var(--dark); margin:32px 0 12px; padding-bottom:8px; border-bottom:2px solid var(--g100); }
+
+  p { margin-bottom:12px; font-size:15px; }
+
+  .table-wrap { overflow-x:auto; margin:16px 0 24px; border-radius:12px; border:1px solid var(--g200); background:#fff; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { text-align:left; padding:12px 16px; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:0.8px; background:var(--dark); color:white; }
+  th:not(:last-child) { border-right:1px solid rgba(255,255,255,0.1); }
+  td { padding:12px 16px; border-bottom:1px solid var(--g100); vertical-align:top; line-height:1.55; }
+  td:not(:last-child) { border-right:1px solid var(--g100); }
+  tr:last-child td { border-bottom:none; }
+  tr:nth-child(even) td { background:var(--g50); }
+
+  .tag { display:inline-block; padding:3px 10px; border-radius:6px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; }
+  .tag-high { background:var(--green-bg); color:var(--green); }
+  .tag-med { background:var(--amber-bg); color:var(--amber); }
+  .tag-low { background:var(--red-bg); color:var(--red); }
+  .tag-blue { background:var(--blue-bg); color:var(--blue); }
+  .tag-purple { background:var(--purple-bg); color:var(--purple); }
+  .tag-teal { background:var(--teal-bg); color:var(--teal); }
+  .tag-amber { background:var(--amber-bg); color:var(--amber); }
+
+  .callout { background:var(--blue-bg); border-left:4px solid var(--blue); padding:20px 24px; border-radius:0 12px 12px 0; margin:24px 0; font-size:14px; line-height:1.6; }
+  .callout p { margin:0; font-size:14px; }
+  .callout strong { color:var(--dark); }
+
+  .card-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin:16px 0 24px; }
+  .card { border-radius:12px; padding:20px; }
+  .card.blue { background:var(--blue-bg); border-left:3px solid var(--blue); }
+  .card.green { background:var(--green-bg); border-left:3px solid var(--green); }
+  .card.amber { background:var(--amber-bg); border-left:3px solid var(--amber); }
+  .card.purple { background:var(--purple-bg); border-left:3px solid var(--purple); }
+  .card.teal { background:var(--teal-bg); border-left:3px solid var(--teal); }
+  .card .c-title { font-size:14px; font-weight:700; color:var(--dark); margin-bottom:4px; }
+  .card .c-desc { font-size:13px; color:var(--g600); line-height:1.5; }
+
+  .pillar-header { background:var(--g100); padding:12px 18px; border-radius:8px; margin:20px 0 12px; }
+  .pillar-header span { font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; color:var(--g600); }
+
+  ul { margin:8px 0 16px 20px; }
+  li { margin-bottom:6px; font-size:14px; line-height:1.6; }
+
+  .footer { text-align:center; font-size:12px; color:var(--g400); padding:40px 24px 24px; border-top:1px solid var(--g200); max-width:1000px; margin:0 auto; }
+
+  .back-top { position:fixed; bottom:28px; right:28px; width:44px; height:44px; border-radius:50%; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; font-size:20px; text-decoration:none; box-shadow:0 4px 16px rgba(43,47,212,0.3); opacity:0; pointer-events:none; transition:all 0.3s; z-index:40; }
+  .back-top.visible { opacity:1; pointer-events:auto; }
+  .back-top:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(43,47,212,0.4); }
+
+  .nav-toggle { display:none; background:none; border:none; font-size:20px; cursor:pointer; padding:4px 8px; color:var(--g700); }
+
+  @media (max-width: 768px) {
+    .cover { padding:56px 20px 40px; min-height:auto; }
+    .cover-meta { gap:16px; }
+    .nav-toggle { display:block; }
+    .nav-links { display:none; flex-direction:column; position:absolute; top:52px; left:0; right:0; background:#fff; border-bottom:1px solid var(--g200); padding:12px 16px; gap:2px; box-shadow:0 8px 24px rgba(0,0,0,0.08); }
+    .nav-links.open { display:flex; }
+    .nav-links a { padding:10px 12px; font-size:14px; }
+    .card-row { grid-template-columns:1fr; }
+    .section { padding:40px 16px; }
+    table { font-size:12px; }
+    th, td { padding:10px 12px; }
+  }
+
+  @media print {
+    body { background:#fff; font-size:10pt; }
+    .nav { display:none; }
+    .cover { min-height:auto; padding:40px 24px; background:var(--dark) !important; }
+    .section { page-break-inside:avoid; }
+    .table-wrap { border:1px solid #ccc; }
+    *, *::before, *::after { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
+    th { background:var(--dark) !important; color:#fff !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">Tiendanube Partners · Análisis de Procesos</div>
+    <div class="nav-links">
+      <a href="#contexto">Contexto</a>
+      <a href="#mapa">Mapa</a>
+      <a href="#onboarding">Onboarding</a>
+      <a href="#prospeccion">Prospección</a>
+      <a href="#fidelizacion">Fidelización</a>
+      <a href="#infra">Infra</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#docs">Docs</a>
+    </div>
+  </div>
+</nav>
+
+<div class="cover">
+  <div class="cover-badge">Tiendanube Partners</div>
+  <h1>Análisis de Procesos <span>y Oportunidades de Mejora</span></h1>
+  <p class="cover-sub">Diagnóstico del estado actual de los procesos del Programa de Afiliados Argentina, con propuestas concretas de mejora priorizadas por impacto, esfuerzo y tiempo de ejecución.</p>
+  <div class="cover-meta">
+    <div class="cover-meta-item">Área<strong>Affiliate Marketing</strong></div>
+    <div class="cover-meta-item">Alcance<strong>Argentina</strong></div>
+    <div class="cover-meta-item">Fecha<strong>Febrero 2026</strong></div>
+    <div class="cover-meta-item">Autora<strong>Celeste Condoleo</strong></div>
+  </div>
+</div>
+
+<div class="section" id="contexto">
+  <div class="s-num">Sección 01</div>
+  <h2>Contexto y metodología</h2>
+  <div class="s-bar"></div>
+  <p class="s-intro">Este documento consolida las oportunidades identificadas durante las primeras semanas de onboarding, cruzando el análisis de la comunidad, los flujos actuales de email, las conversaciones 1:1 por WhatsApp y la documentación interna del programa.</p>
+
+  <h3>Fuentes analizadas</h3>
+  <ul>
+    <li>Reporte de Comunidad de Afiliados (ago 2025 – feb 2026): +2.000 mensajes en Networking, ~40 comunicaciones en Anuncios</li>
+    <li>Flujo de onboarding por email (5 emails, métricas de HubSpot)</li>
+    <li>Conversaciones 1:1 por WhatsApp (primeras semanas de gestión)</li>
+    <li>Documentación interna: PPT Onboarding 2026, Resumen del Programa, Documentación AR</li>
+    <li>Landings públicas: tiendanube.com/socios/asociados</li>
+  </ul>
+
+  <h3>Estructura del análisis</h3>
+  <p>Las oportunidades están organizadas en los 3 pilares estratégicos del área + un bloque de infraestructura y herramientas:</p>
+
+  <div class="card-row">
+    <div class="card blue">
+      <div class="c-title">🔍 Prospección</div>
+      <div class="c-desc">Cómo encontramos y contactamos nuevos perfiles de afiliados</div>
+    </div>
+    <div class="card green">
+      <div class="c-title">🚀 Onboarding</div>
+      <div class="c-desc">Cómo los acompañamos desde el registro hasta su primer resultado</div>
+    </div>
+    <div class="card purple">
+      <div class="c-title">💙 Fidelización</div>
+      <div class="c-desc">Cómo los mantenemos activos, informados y generando referidos</div>
+    </div>
+    <div class="card amber">
+      <div class="c-title">⚙️ Infraestructura</div>
+      <div class="c-desc">Herramientas, automatizaciones y recursos que habilitan todo lo anterior</div>
+    </div>
+  </div>
+
+  <h3>Criterios de evaluación</h3>
+  <table>
+    <thead>
+      <tr><th>Criterio</th><th>Alto</th><th>Medio</th><th>Bajo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="font-weight:700;">Impacto</td><td>Afecta directamente NPs, activación o retención</td><td>Mejora eficiencia o experiencia del afiliado</td><td>Nice to have, mejora marginal</td></tr>
+      <tr><td style="font-weight:700;">Esfuerzo</td><td>+4 semanas o depende de otros equipos</td><td>2-4 semanas, mayormente autogestionable</td><td>1-2 semanas, se puede hacer solo</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section" id="mapa">
+  <div class="s-num">Sección 02</div>
+  <h2>Mapa de oportunidades</h2>
+  <div class="s-bar"></div>
+  <p class="s-intro">Vista consolidada de las 13 oportunidades identificadas, priorizadas por la relación impacto/esfuerzo. Las oportunidades #11-#13 fueron incorporadas tras la reunión de equipo del 23/02/2026.</p>
+
+  <table>
+    <thead>
+      <tr><th>#</th><th>Oportunidad</th><th>Pilar</th><th>Impacto</th><th>Esfuerzo</th><th>Mes</th><th>Dependencias</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="font-weight:700;">1</td>
+        <td><strong>Rediseñar flujo de onboarding por email</strong></td>
+        <td><span class="tag tag-teal">Onboarding</span></td>
+        <td><span class="tag tag-high">Alto</span></td>
+        <td><span class="tag tag-med">Medio</span></td>
+        <td>Mes 2</td>
+        <td>HubSpot (acceso workflows)</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;">2</td>
+        <td><strong>Flujos de onboarding segmentados por perfil</strong></td>
+        <td><span class="tag tag-teal">Onboarding</span></td>
+        <td><span class="tag tag-high">Alto</span></td>
+        <td><span class="tag tag-high">Alto</span></td>
+        <td>Mes 3</td>
+        <td>Flujo base (#1) implementado</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;">3</td>
+        <td><strong>Entrevistas con afiliados nuevos</strong></td>
+        <td><span class="tag tag-teal">Onboarding</span></td>
+        <td><span class="tag tag-high">Alto</span></td>
+        <td><span class="tag tag-high">Bajo</span></td>
+        <td>Mes 2</td>
+        <td>Ninguna</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;">4</td>
+        <td><strong>Estrategia y materiales para comunidad autogestionada</strong></td>
+        <td><span class="tag tag-purple">Fidelización</span></td>
+        <td><span class="tag tag-high">Alto</span></td>
+        <td><span class="tag tag-med">Medio</span></td>
+        <td>Mes 2-3</td>
+        <td>Ninguna</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;">5</td>
+        <td><strong>Chatbot WhatsApp para filtrar consultas 1:1</strong></td>
+        <td><span class="tag tag-blue">Prospección</span></td>
+        <td><span class="tag tag-med">Medio</span></td>
+        <td><span class="tag tag-med">Medio</span></td>
+        <td>Mes 2-3</td>
+        <td>Treble o herramienta WPP</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;">6</td>
+        <td><strong>Actualizar landings con bajada ONE STRONG BRAND</strong></td>
+        <td><span class="tag tag-blue">Prospección</span></td>
+        <td><span class="tag tag-med">Medio</span></td>
+        <td><span class="tag tag-med">Medio</span></td>
+        <td>Mes 2-3</td>
+        <td>Diseños específicos (Brand)</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;">7</td>
+        <td><strong>Landing específica por perfil principal</strong></td>
+        <td><span class="tag tag-blue">Prospección</span></td>
+        <td><span class="tag tag-med">Medio</span></td>
+        <td><span class="tag tag-high">Alto</span></td>
+        <td>Mes 3+</td>
+        <td>Landing base (#6) actualizada + CMS</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;">8</td>
+        <td><strong>Incorporar flujos automatizados en Treble</strong></td>
+        <td><span class="tag tag-teal">Onboarding</span></td>
+        <td><span class="tag tag-high">Alto</span></td>
+        <td><span class="tag tag-high">Alto</span></td>
+        <td>TBD</td>
+        <td>Acceso a Treble (en gestión)</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;">9</td>
+        <td><strong>Unificar perfiles contactados con Modash</strong></td>
+        <td><span class="tag tag-blue">Prospección</span></td>
+        <td><span class="tag tag-med">Medio</span></td>
+        <td><span class="tag tag-med">Medio</span></td>
+        <td>Mes 3</td>
+        <td>Acceso a Modash + Tableau</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;">10</td>
+        <td><strong>Automatizar tareas operativas con IA</strong></td>
+        <td><span class="tag tag-amber">Infra</span></td>
+        <td><span class="tag tag-med">Medio</span></td>
+        <td><span class="tag tag-high">Bajo</span></td>
+        <td>Continuo</td>
+        <td>Ninguna</td>
+      </tr>
+      <tr style="background:var(--blue-bg);">
+        <td style="font-weight:700;">11</td>
+        <td><strong>Programa de Lealtad (Loyalty) y Reconocimiento</strong></td>
+        <td><span class="tag tag-purple">Fidelización</span></td>
+        <td><span class="tag tag-high">Alto</span></td>
+        <td><span class="tag tag-med">Medio</span></td>
+        <td>Mes 2-3</td>
+        <td>Datos de Tableau/Rodata para ranking</td>
+      </tr>
+      <tr style="background:var(--blue-bg);">
+        <td style="font-weight:700;">12</td>
+        <td><strong>Automatización del ranking y prevención de fraude</strong></td>
+        <td><span class="tag tag-amber">Infra</span></td>
+        <td><span class="tag tag-high">Alto</span></td>
+        <td><span class="tag tag-high">Alto</span></td>
+        <td>Mes 3+</td>
+        <td>Conexión Tableau ↔ landing (Cursor); estandarización de reglas de fraude</td>
+      </tr>
+      <tr style="background:var(--blue-bg);">
+        <td style="font-weight:700;">13</td>
+        <td><strong>Campaña de activación de afiliados en la comunidad</strong></td>
+        <td><span class="tag tag-purple">Fidelización</span></td>
+        <td><span class="tag tag-high">Alto</span></td>
+        <td><span class="tag tag-high">Bajo</span></td>
+        <td>Mes 2</td>
+        <td>Datos de Rodata para tracking de activación</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <p><strong>🆕 Oportunidades #11-#13:</strong> Incorporadas a partir de la reunión de equipo del 23 de febrero de 2026. Celes desarrollará un borrador del programa de lealtad para revisión en la próxima reunión del jueves. El equipo de Buenos Aires se lleva la idea de los desafíos semanales/mensuales para armar una propuesta concreta.</p>
+  </div>
+</div>
+
+<div class="section" id="onboarding">
+  <div class="s-num">Sección 03</div>
+  <h2>Detalle por oportunidad: Onboarding</h2>
+  <div class="s-bar"></div>
+
+  <div class="pillar-header"><span>🚀 Pilar: Onboarding</span></div>
+
+  <h3>#1 — Rediseñar flujo de onboarding por email</h3>
+  <table>
+    <thead><tr><th style="width:25%;">Aspecto</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;">Estado actual</td><td>5 emails genéricos con caída masiva de engagement: -57% open rate y -83% click rate entre email 1 y 2. Contenido sesgado hacia creadores de contenido. Tienda demo no se menciona hasta el email 2 y se pierde entre otros CTAs.</td></tr>
+      <tr><td style="font-weight:700;">Propuesta</td><td>Reescribir la secuencia completa con foco en activación. Nuevo orden: Bienvenida simplificada → Comisiones concretas (con simulador) → Tienda demo dedicada → Tips segmentados → Check-in personal. Mejorar asuntos para subir open rate.</td></tr>
+      <tr><td style="font-weight:700;">Impacto esperado</td><td><span class="tag tag-high">Alto</span> — Subir click rate promedio de emails 2-5 del 3,6% a >8%. Mejorar completion rate de la secuencia a >50%.</td></tr>
+      <tr><td style="font-weight:700;">Esfuerzo</td><td><span class="tag tag-med">Medio</span> — 3-4 semanas. Redacción + diseño en HubSpot + QA + go live.</td></tr>
+      <tr><td style="font-weight:700;">Dependencias</td><td>Acceso a workflows de HubSpot</td></tr>
+      <tr><td style="font-weight:700;">Timeline sugerido</td><td>Marzo (mes 2). Quick wins (asuntos + CTAs) en semana 1, emails nuevos en semanas 2-4.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <p><strong>📄 Análisis detallado disponible:</strong> El diagnóstico completo de los 5 emails actuales con métricas, problemas identificados y la propuesta de nueva secuencia está en el documento <em>"Análisis Onboarding Email — Afiliados Tiendanube"</em>.</p>
+  </div>
+
+  <h3>#2 — Flujos de onboarding segmentados por perfil</h3>
+  <table>
+    <thead><tr><th style="width:25%;">Aspecto</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;">Estado actual</td><td>Todos los afiliados reciben el mismo onboarding independientemente de si son influencers, agencias, mentores, dropshipping o merchants. Un mentor no refiere igual que un freelancer que arma tiendas.</td></tr>
+      <tr><td style="font-weight:700;">Propuesta</td><td>A partir del email 4 (tips), bifurcar la secuencia con contenido diferenciado para al menos 3 grupos: Influencers/Creators, Agencias/Freelancers, Mentores/Dropshipping. Usar la propiedad de perfil de HubSpot (ya existe por formulario de registro).</td></tr>
+      <tr><td style="font-weight:700;">Impacto esperado</td><td><span class="tag tag-high">Alto</span> — Tips relevantes aumentan activación. Los afiliados sienten que el programa entiende su modelo de negocio.</td></tr>
+      <tr><td style="font-weight:700;">Esfuerzo</td><td><span class="tag tag-high">Alto</span> — 4+ semanas. Requiere redacción de variantes + branching en HubSpot.</td></tr>
+      <tr><td style="font-weight:700;">Dependencias</td><td>Flujo base (#1) implementado primero</td></tr>
+      <tr><td style="font-weight:700;">Timeline sugerido</td><td>Abril (mes 3). Implementar después de que el flujo base esté estable.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>#3 — Entrevistas con afiliados nuevos</h3>
+  <table>
+    <thead><tr><th style="width:25%;">Aspecto</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;">Estado actual</td><td>No hay un mecanismo formal para recoger feedback del onboarding. El 18% declaró necesitar capacitación para arrancar y el 44% seguía "planeando" después de semanas en el programa. No sabemos en qué punto se pierden.</td></tr>
+      <tr><td style="font-weight:700;">Propuesta</td><td>Hacer 5-8 entrevistas cortas (15-20 min) con afiliados que se registraron en los últimos 60 días. Preguntar: qué les resultó claro, dónde se trabaron, qué les falta para arrancar. Complementar con una encuesta breve por email para volumen.</td></tr>
+      <tr><td style="font-weight:700;">Impacto esperado</td><td><span class="tag tag-high">Alto</span> — Feedback directo para validar (o descartar) las hipótesis de mejora antes de invertir tiempo en implementar.</td></tr>
+      <tr><td style="font-weight:700;">Esfuerzo</td><td><span class="tag tag-high">Bajo</span> — 1-2 semanas. No requiere herramientas ni otros equipos.</td></tr>
+      <tr><td style="font-weight:700;">Dependencias</td><td>Ninguna</td></tr>
+      <tr><td style="font-weight:700;">Timeline sugerido</td><td>Marzo semana 1-2. Hacerlo antes de rediseñar el onboarding para alimentar las decisiones con data real.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>#8 — Incorporar flujos automatizados en Treble</h3>
+  <table>
+    <thead><tr><th style="width:25%;">Aspecto</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;">Estado actual</td><td>El onboarding por WhatsApp se limita a un mensaje automático de bienvenida (acceso a landing de recursos + comunidad). Treble está en proceso de gestión de acceso, sin fecha confirmada.</td></tr>
+      <tr><td style="font-weight:700;">Propuesta</td><td>Una vez habilitado Treble, implementar al menos 3 flujos: bienvenida enriquecida (con preguntas para segmentar perfil), reactivación de afiliados inactivos (+30 días sin referir), y aviso de comisiones disponibles para cobro.</td></tr>
+      <tr><td style="font-weight:700;">Impacto esperado</td><td><span class="tag tag-high">Alto</span> — WhatsApp tiene tasas de apertura de +90%. Automatizar flujos clave libera tiempo operativo y mejora la experiencia.</td></tr>
+      <tr><td style="font-weight:700;">Esfuerzo</td><td><span class="tag tag-high">Alto</span> — Onboarding en la herramienta + diseño de flujos + testeo. 4+ semanas desde que se tenga acceso.</td></tr>
+      <tr><td style="font-weight:700;">Dependencias</td><td>Acceso a Treble (en gestión, sin fecha). Onboarding en la herramienta.</td></tr>
+      <tr><td style="font-weight:700;">Timeline sugerido</td><td>TBD. Dejar el diseño de flujos listo en borrador para implementar apenas se habilite el acceso.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section" id="prospeccion">
+  <div class="s-num">Sección 04</div>
+  <h2>Detalle por oportunidad: Prospección</h2>
+  <div class="s-bar"></div>
+
+  <div class="pillar-header"><span>🔍 Pilar: Prospección</span></div>
+
+  <h3>#5 — Chatbot WhatsApp para filtrar consultas 1:1</h3>
+  <table>
+    <thead><tr><th style="width:25%;">Aspecto</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;">Estado actual</td><td>Todas las consultas entrantes al WhatsApp corporativo (+54 9 11 2290-9228) se responden manualmente 1:1. Llegan consultas muy variadas: afiliados nuevos, afiliados existentes, merchants que quieren crear una tienda, empresas buscando reuniones, consultas de tech partners. El mensaje automático actual solo dice "dejame tu consulta".</td></tr>
+      <tr><td style="font-weight:700;">Propuesta</td><td>Implementar un chatbot breve (3-4 preguntas) que clasifique la consulta antes de llegar a un humano: ¿Sos afiliado o querés información? → Si es afiliado: ¿consulta sobre comisiones, soporte técnico o comunidad? → Derivar al canal correcto o responder con mensaje prediseñado. Si no es afiliado: enviar bajada del programa + CTA de registro.</td></tr>
+      <tr><td style="font-weight:700;">Impacto esperado</td><td><span class="tag tag-med">Medio</span> — Reduce tiempo de respuesta, filtra consultas que no corresponden al canal, y mejora la experiencia del primer contacto.</td></tr>
+      <tr><td style="font-weight:700;">Esfuerzo</td><td><span class="tag tag-med">Medio</span> — Depende de la herramienta. Con Treble podría armarse en 1-2 semanas. Sin Treble, se puede mejorar el mensaje automático actual como solución intermedia.</td></tr>
+      <tr><td style="font-weight:700;">Dependencias</td><td>Treble o herramienta de automatización WhatsApp</td></tr>
+      <tr><td style="font-weight:700;">Timeline sugerido</td><td>Quick win inmediato: mejorar el mensaje automático de WPP con opciones claras. Chatbot completo: cuando se tenga Treble.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>#6 — Actualizar landings con bajada ONE STRONG BRAND</h3>
+  <table>
+    <thead><tr><th style="width:25%;">Aspecto</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;">Estado actual</td><td>La landing actual (tiendanube.com/socios/asociados) es funcional pero genérica. No refleja la nueva bajada de marca ONE STRONG BRAND. La propuesta de valor es la misma para todos los perfiles. El CTA lleva directo al registro sin calificar al lead.</td></tr>
+      <tr><td style="font-weight:700;">Propuesta</td><td>Actualizar copy, diseño y estructura de la landing principal para alinear con ONE STRONG BRAND. Incorporar social proof real (datos de la comunidad, testimonios), segmentar la propuesta de valor por perfil, y mejorar el formulario de captura.</td></tr>
+      <tr><td style="font-weight:700;">Impacto esperado</td><td><span class="tag tag-med">Medio</span> — Mejora CVR de la landing. Los leads llegan más calificados y con expectativas alineadas.</td></tr>
+      <tr><td style="font-weight:700;">Esfuerzo</td><td><span class="tag tag-med">Medio</span> — 2-3 semanas. Tenemos acceso directo al CMS y las definiciones de OSB ya están disponibles. Copy y estructura son autogestionables.</td></tr>
+      <tr><td style="font-weight:700;">Dependencias</td><td>Piezas de diseño específicas para la landing (solicitar a equipo de Diseño/Brand).</td></tr>
+      <tr><td style="font-weight:700;">Timeline sugerido</td><td>Marzo-Abril. Avanzar con copy y estructura en paralelo al pedido de diseño.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>#7 — Landing específica por perfil principal</h3>
+  <table>
+    <thead><tr><th style="width:25%;">Aspecto</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;">Estado actual</td><td>Una sola landing para todos. Los anuncios de pauta (Instagram) llevan al mismo destino independientemente de si el ad habla de dropshipping, mentorías o creación de contenido.</td></tr>
+      <tr><td style="font-weight:700;">Propuesta</td><td>Crear al menos 3 landings diferenciadas para los perfiles principales: Influencers/Creators, Agencias/Freelancers, Dropshipping/Mentores. Cada una con propuesta de valor, testimonios y beneficios relevantes para ese perfil. Permite también segmentar los ads.</td></tr>
+      <tr><td style="font-weight:700;">Impacto esperado</td><td><span class="tag tag-med">Medio</span> — Mayor CVR en pauta al tener mensaje consistente desde el ad hasta la landing. Mejor calificación de leads.</td></tr>
+      <tr><td style="font-weight:700;">Esfuerzo</td><td><span class="tag tag-high">Alto</span> — 4+ semanas. Requiere diseño y copy por perfil, implementación en CMS (autogestionable) y coordinación con pauta.</td></tr>
+      <tr><td style="font-weight:700;">Dependencias</td><td>Landing base (#6) actualizada primero. Coordinación con Performance para ads segmentados.</td></tr>
+      <tr><td style="font-weight:700;">Timeline sugerido</td><td>Abril+ (mes 3). Visión a futuro, implementar después de la landing base.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>#9 — Unificar perfiles contactados con Modash</h3>
+  <table>
+    <thead><tr><th style="width:25%;">Aspecto</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;">Estado actual</td><td>No hay una forma unificada de ver todos los perfiles que fueron contactados para prospección. Los partners se rastrean fácil con partner code en Tableau, pero los perfiles prospectados 1:1 (por Instagram, eventos, referidos) quedan dispersos.</td></tr>
+      <tr><td style="font-weight:700;">Propuesta</td><td>Explorar Modash como herramienta para centralizar los perfiles contactados, con data de redes sociales integrada. Evaluar si se puede conectar con HubSpot para unificar el pipeline de prospección.</td></tr>
+      <tr><td style="font-weight:700;">Impacto esperado</td><td><span class="tag tag-med">Medio</span> — Evita contactar perfiles duplicados, permite priorizar por métricas de audiencia, y da visibilidad del pipeline de prospección.</td></tr>
+      <tr><td style="font-weight:700;">Esfuerzo</td><td><span class="tag tag-med">Medio</span> — 2-3 semanas para evaluar, configurar y migrar datos existentes.</td></tr>
+      <tr><td style="font-weight:700;">Dependencias</td><td>Acceso a Modash. Acceso a Tableau.</td></tr>
+      <tr><td style="font-weight:700;">Timeline sugerido</td><td>Abril (mes 3). Cuando la prospección escale a nuevas verticales.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section" id="fidelizacion">
+  <div class="s-num">Sección 05</div>
+  <h2>Detalle por oportunidad: Fidelización</h2>
+  <div class="s-bar"></div>
+
+  <div class="pillar-header"><span>💙 Pilar: Fidelización</span></div>
+
+  <h3>#4 — Estrategia y materiales para comunidad autogestionada</h3>
+  <table>
+    <thead><tr><th style="width:25%;">Aspecto</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;">Estado actual</td><td>La comunidad de WhatsApp (+250 miembros) funciona de forma semi-orgánica. El grupo de Networking tiene conversaciones valiosas pero con baches de silencio. El canal de Anuncios es unidireccional. Solo ~5% de los miembros participan activamente. No hay dinámicas recurrentes ni contenido serializado.</td></tr>
+      <tr><td style="font-weight:700;">Propuesta</td><td>Implementar un calendario de contenidos semanal con formatos probados: encuesta semanal en Anuncios (formato de mayor engagement: hasta 92 votos), pregunta de la semana en Networking, caso de éxito quincenal, y contenido educativo mensual. Conectar ambos canales: Anuncios dispara temas → Networking los debate.</td></tr>
+      <tr><td style="font-weight:700;">Impacto esperado</td><td><span class="tag tag-high">Alto</span> — Mantener afiliados activos e informados reduce inactividad. Las encuestas generan data para tomar decisiones. El networking fortalece la retención.</td></tr>
+      <tr><td style="font-weight:700;">Esfuerzo</td><td><span class="tag tag-med">Medio</span> — Setup inicial: 1 semana (calendario + templates). Ejecución: ~2-3 horas semanales ongoing.</td></tr>
+      <tr><td style="font-weight:700;">Dependencias</td><td>Ninguna. Se puede empezar inmediatamente.</td></tr>
+      <tr><td style="font-weight:700;">Timeline sugerido</td><td>Ya en ejecución (marzo). Calendario de comunicaciones WPP diseñado y en implementación.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <p><strong>✅ Estado:</strong> Esta iniciativa ya está en marcha. El calendario de comunicaciones de marzo para la comunidad de WhatsApp está diseñado e incluye: presentación de Celes, encuesta de benchmark de precios, resultados + guía link vs. portal, caso de éxito, encuesta de actividad, tips por nivel, guía de inhabilitación, y cierre con feedback. Ver <em>"Calendario Comunicaciones Afiliados 2026"</em> en Google Sheets.</p>
+  </div>
+
+  <h3>#11 — Programa de Lealtad (Loyalty) y Reconocimiento</h3>
+  <table>
+    <thead><tr><th style="width:25%;">Aspecto</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;">Estado actual</td><td>No existe un programa formal de reconocimiento para afiliados. Los líderes naturales de la comunidad (Andrés, Ro, Romi, Tamara, Pablo) sostienen el grupo sin reconocimiento formal. No hay incentivos escalonados ni visibilidad del rendimiento relativo de cada afiliado. El único incentivo vigente es la comisión por referido.</td></tr>
+      <tr><td style="font-weight:700;">Propuesta</td><td>Crear un programa de lealtad estructurado con los siguientes componentes:
+        <ul style="margin-top:6px;">
+          <li><strong>Sistema de categorías:</strong> Asignar niveles de lealtad (Platinum, Gold, Silver) basados en actividad mensual — métrica principal: número de tiendas creadas con link de afiliado.</li>
+          <li><strong>Desafíos recurrentes:</strong> Desafíos mensuales o trimestrales con metas concretas y premios (beneficios exclusivos, acceso anticipado, reconocimiento público).</li>
+          <li><strong>Placas de reconocimiento anuales:</strong> Sistema de placas similar a un ranking anual, comunicado vía newsletters y canales de la comunidad.</li>
+          <li><strong>Visibilidad del ranking:</strong> Dashboard o landing donde cada afiliado pueda ver su posición relativa y progreso hacia el siguiente nivel.</li>
+        </ul>
+      </td></tr>
+      <tr><td style="font-weight:700;">Impacto esperado</td><td><span class="tag tag-high">Alto</span> — Incentiva actividad recurrente, reduce inactividad, genera competencia sana. Los desafíos previos (Creadores Nube) ya demostraron tracción real: +200 tiendas en 4 meses. Un programa permanente institucionaliza ese efecto.</td></tr>
+      <tr><td style="font-weight:700;">Esfuerzo</td><td><span class="tag tag-med">Medio</span> — Diseño del programa: 2-3 semanas. Implementación depende de la automatización del ranking (#12). La versión manual (actualización mensual) puede arrancar antes.</td></tr>
+      <tr><td style="font-weight:700;">Dependencias</td><td>Datos de Tableau/Rodata para alimentar el ranking. Para la versión automatizada: conexión Tableau ↔ landing (#12).</td></tr>
+      <tr><td style="font-weight:700;">Timeline sugerido</td><td>Borrador del programa: próxima reunión del jueves. V1 manual (categorías + reconocimiento por newsletter): marzo-abril. V2 automatizada: depende de #12.</td></tr>
+      <tr><td style="font-weight:700;">Owner</td><td>Celes desarrolla el borrador. Equipo Buenos Aires lleva la propuesta de desafíos semanales/mensuales para armar un "pronom" y revisarlo el jueves.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <p><strong>📋 Próximo paso inmediato:</strong> Celes prepara un borrador del programa de lealtad para la reunión del jueves. El borrador debe incluir: criterios de categorización (Platinum/Gold/Silver), métricas de corte, mecánica de los desafíos, premios/beneficios por nivel, y plan de comunicación a la comunidad.</p>
+  </div>
+
+  <h3>#12 — Automatización del ranking y prevención de fraude</h3>
+  <table>
+    <thead><tr><th style="width:25%;">Aspecto</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;">Estado actual</td><td>La información de performance de afiliados está en Tableau pero no conectada con ninguna interfaz visible para el equipo o los afiliados. Las actualizaciones de datos son manuales. No hay reglas estandarizadas de fraude para filtrar tiendas "falsas" del conteo de referidos.</td></tr>
+      <tr><td style="font-weight:700;">Propuesta</td><td>Dos líneas de trabajo:
+        <ul style="margin-top:6px;">
+          <li><strong>Automatización del ranking:</strong> Conectar Tableau con la landing/dashboard del programa de lealtad para que los datos se actualicen automáticamente. Si la conexión directa no es viable (Tableau no está conectado con la landing en Cursor), implementar actualización manual al cierre de cada mes, o bimestral/trimestral para reducir carga operativa.</li>
+          <li><strong>Prevención de fraude:</strong> Estandarizar reglas para evitar que afiliados con tiendas falsas aparezcan en los primeros puestos del ranking. Definir criterios de "tienda válida" (ej: al menos X productos cargados, al menos 1 venta, plan pago activo por más de X días). Implementar estos filtros antes de automatizar el ranking.</li>
+        </ul>
+      </td></tr>
+      <tr><td style="font-weight:700;">Impacto esperado</td><td><span class="tag tag-high">Alto</span> — La actualización automática es la clave para que el programa de lealtad funcione de forma sostenible. Sin automatización, la carga manual lo hace inviable a largo plazo. La prevención de fraude protege la credibilidad del ranking.</td></tr>
+      <tr><td style="font-weight:700;">Esfuerzo</td><td><span class="tag tag-high">Alto</span> — Automatización: depende de la infraestructura disponible (Tableau ↔ Cursor). Fraude: 2-3 semanas para definir reglas + validación con datos históricos.</td></tr>
+      <tr><td style="font-weight:700;">Dependencias</td><td>Acceso a Tableau. Evaluación técnica de conexión Tableau ↔ landing. Definición de reglas de fraude con el equipo.</td></tr>
+      <tr><td style="font-weight:700;">Timeline sugerido</td><td>Reglas de fraude: definir en marzo (antes de lanzar el programa de lealtad). Automatización: evaluar viabilidad técnica en abril; si no es viable, arrancar con actualización manual mensual.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>#13 — Campaña de activación de afiliados en la comunidad</h3>
+  <table>
+    <thead><tr><th style="width:25%;">Aspecto</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;">Estado actual</td><td>No todos los afiliados registrados están en la comunidad de WhatsApp. Algunos afiliados de nivel 1 solo reciben información de forma individual y no participan del grupo. No hay visibilidad clara de qué perfiles registrados realmente se activan (generan al menos 1 referido). El 15/dic ingresaron ~50 personas nuevas y solo 2 interactuaron.</td></tr>
+      <tr><td style="font-weight:700;">Propuesta</td><td>Implementar una campaña de difusión en 3 frentes:
+        <ul style="margin-top:6px;">
+          <li><strong>Invitación masiva a la comunidad:</strong> Campaña por email + WPP 1:1 a todos los afiliados registrados que no están en los grupos, destacando que pueden unirse solo al canal de Anuncios si no quieren participar en Networking.</li>
+          <li><strong>Tracking de activación:</strong> Usar datos de Rodata para cruzar perfiles registrados con actividad real (tiendas creadas). Identificar la brecha entre "registrados" y "activos" para dimensionar el problema y focalizar esfuerzos.</li>
+          <li><strong>Segmentación por nivel:</strong> Diferenciar la comunicación para afiliados nivel 1 (nuevos, necesitan más acompañamiento) vs. afiliados ya activos (necesitan incentivos para escalar).</li>
+        </ul>
+      </td></tr>
+      <tr><td style="font-weight:700;">Impacto esperado</td><td><span class="tag tag-high">Alto</span> — Más afiliados en la comunidad = más engagement, más intercambio de valor entre pares, más retención. El tracking de activación permite identificar dónde se pierden los afiliados en el funnel.</td></tr>
+      <tr><td style="font-weight:700;">Esfuerzo</td><td><span class="tag tag-high">Bajo</span> — Campaña de invitación: 1 semana (email + mensajes). Tracking con Rodata: depende del acceso, pero el análisis inicial es rápido.</td></tr>
+      <tr><td style="font-weight:700;">Dependencias</td><td>Acceso a datos de Rodata para tracking de activación. Lista de afiliados registrados que no están en WPP (cruzar HubSpot con miembros del grupo).</td></tr>
+      <tr><td style="font-weight:700;">Timeline sugerido</td><td>Campaña de invitación: marzo S2-S3. Análisis de activación con Rodata: marzo-abril (cuando se tenga acceso).</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <p><strong>🔗 Conexión entre #11, #12 y #13:</strong> Estas tres oportunidades se potencian mutuamente. La campaña de activación (#13) trae más afiliados a la comunidad. El programa de lealtad (#11) les da un motivo para mantenerse activos. Y la automatización del ranking (#12) hace que el programa sea sostenible y creíble a largo plazo. Se recomienda ejecutarlas en este orden: primero #13 (bajo esfuerzo, alto impacto inmediato), luego #11 (borrador → V1 manual), y finalmente #12 (cuando la infraestructura lo permita).</p>
+  </div>
+</div>
+
+<div class="section" id="infra">
+  <div class="s-num">Sección 06</div>
+  <h2>Detalle por oportunidad: Infraestructura</h2>
+  <div class="s-bar"></div>
+
+  <div class="pillar-header"><span>⚙️ Pilar: Infraestructura & Herramientas</span></div>
+
+  <h3>#10 — Automatizar tareas operativas con IA</h3>
+  <table>
+    <thead><tr><th style="width:25%;">Aspecto</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;">Estado actual</td><td>Muchas tareas del día a día son repetitivas: responder consultas frecuentes por WhatsApp, redactar comunicaciones, analizar datos de la comunidad, generar reportes, crear briefs de contenido.</td></tr>
+      <tr><td style="font-weight:700;">Propuesta</td><td>Identificar las tareas más repetitivas del rol y automatizarlas con herramientas de IA:
+        <ul style="margin-top:6px;">
+          <li><strong>Respuestas WPP:</strong> Banco de respuestas prediseñadas por tipo de consulta (ya iniciado en esta sesión)</li>
+          <li><strong>Redacción de comunicaciones:</strong> Templates + asistente de IA con contexto del programa</li>
+          <li><strong>Análisis de comunidad:</strong> Exportar chats y procesarlos para detectar temas recurrentes</li>
+          <li><strong>Reportes:</strong> Automatizar resúmenes semanales de consultas WPP</li>
+        </ul>
+      </td></tr>
+      <tr><td style="font-weight:700;">Impacto esperado</td><td><span class="tag tag-med">Medio</span> — Libera tiempo operativo para dedicar a prospección y gestión de perfiles (lo que realmente mueve NPs).</td></tr>
+      <tr><td style="font-weight:700;">Esfuerzo</td><td><span class="tag tag-high">Bajo</span> — Incremental. Se va implementando de a poco sin un proyecto formal.</td></tr>
+      <tr><td style="font-weight:700;">Dependencias</td><td>Ninguna</td></tr>
+      <tr><td style="font-weight:700;">Timeline sugerido</td><td>Continuo. Ya en ejecución parcial.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section" id="roadmap">
+  <div class="s-num">Sección 07</div>
+  <h2>Matriz de priorización y roadmap</h2>
+  <div class="s-bar"></div>
+  <p class="s-intro">Propuesta de ejecución alineada con los objetivos del mes 2 (marzo) y mes 3 (abril), considerando dependencias y quick wins.</p>
+
+  <h3>Mes 2 — Marzo 2026</h3>
+  <p>Foco: implementar quick wins, validar hipótesis con entrevistas, activar la comunidad, y preparar el programa de lealtad.</p>
+  <table>
+    <thead><tr><th>Semana</th><th>Acción</th><th>Oportunidad</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;">S1 (2-6 mar)</td><td>Envío del primer email de reactivación a toda la base de afiliados. Entrevistas con 3-4 afiliados nuevos. Mejorar asuntos de email 2-5 (quick win). Mejorar mensaje automático WPP. <strong>Celes prepara borrador del programa de lealtad para revisión el jueves.</strong></td><td>Email, #3, #1, #5, <strong>#11</strong></td></tr>
+      <tr><td style="font-weight:700;">S2 (9-13 mar)</td><td>Entrevistas con 3-4 afiliados más. Redactar emails nuevos (comisiones, demo, check-in). <strong>Lanzar campaña de invitación a la comunidad WPP para afiliados no integrados.</strong> Definir reglas de fraude para el ranking.</td><td>#3, #1, #4, <strong>#13, #12</strong></td></tr>
+      <tr><td style="font-weight:700;">S3 (16-20 mar)</td><td>Diseño de emails nuevos en HubSpot. Brief de contenido para landing actualizada. Comunicaciones WPP según calendario. <strong>Cruzar datos HubSpot vs. miembros WPP para dimensionar brecha de activación. Iterar borrador del programa de lealtad con feedback del equipo.</strong></td><td>#1, #6, #4, <strong>#13, #11</strong></td></tr>
+      <tr><td style="font-weight:700;">S4 (23-27 mar)</td><td>QA del flujo de onboarding + go live. Consolidar insights de entrevistas. Cierre de mes + feedback de comunidad. <strong>Versión final del programa de lealtad lista para comunicar.</strong></td><td>#1, #3, #4, <strong>#11</strong></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Mes 3 — Abril 2026</h3>
+  <p>Foco: segmentación, escalabilidad, lanzamiento del programa de lealtad, y optimización basada en datos del mes anterior.</p>
+  <table>
+    <thead><tr><th>Semana</th><th>Acción</th><th>Oportunidad</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;">S1-2</td><td>Implementar segmentación de email 4 por perfil. Coordinar actualización de landing con CMS. Evaluar Modash. <strong>Lanzar V1 del programa de lealtad (manual): comunicar categorías Platinum/Gold/Silver a la comunidad. Primer desafío mensual.</strong></td><td>#2, #6, #9, <strong>#11</strong></td></tr>
+      <tr><td style="font-weight:700;">S3-4</td><td>Go live landing actualizada. Primer webinar de capacitación para afiliados. Si Treble disponible: implementar flujo de bienvenida WPP. <strong>Evaluar viabilidad técnica de conexión Tableau ↔ landing para automatizar ranking. Análisis de activación con datos de Rodata.</strong></td><td>#6, #4, #8, <strong>#12, #13</strong></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Backlog (cuando se habiliten dependencias)</h3>
+  <table>
+    <thead><tr><th>Oportunidad</th><th>Bloqueado por</th><th>Qué se puede avanzar ahora</th></tr></thead>
+    <tbody>
+      <tr><td>#7 — Landings por perfil</td><td>Landing base actualizada + coordinación con Performance</td><td>Redactar el copy diferenciado por perfil</td></tr>
+      <tr><td>#8 — Flujos en Treble</td><td>Acceso a Treble</td><td>Diseñar los flujos en borrador (mensajes, lógica, triggers)</td></tr>
+      <tr><td><strong>#12 — Automatización del ranking</strong></td><td>Evaluación técnica Tableau ↔ Cursor; reglas de fraude definidas</td><td>Definir reglas de fraude y criterios de "tienda válida". Diseñar el dashboard/landing del ranking en borrador</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <p><strong>Criterio de priorización:</strong> Se priorizó primero lo que no tiene dependencias externas y valida hipótesis (#3 entrevistas), luego los quick wins de alto impacto (#1 onboarding email, #13 campaña activación), después lo que ya está en ejecución (#4 comunidad, #10 IA), el programa de lealtad en V1 manual (#11) para arrancar rápido, y finalmente lo que depende de otros equipos o herramientas (#6, #7, #8, #9, #12).</p>
+  </div>
+</div>
+
+<div class="section" id="docs">
+  <div class="s-num">Sección 08</div>
+  <h2>Documentos relacionados</h2>
+  <div class="s-bar"></div>
+  <p class="s-intro">Este análisis se complementa con los siguientes documentos producidos durante el primer mes:</p>
+
+  <table>
+    <thead><tr><th>Documento</th><th>Contenido</th><th>Estado</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;">Manual de Voz y Tono</td><td>4 pilares de voz, tono por contexto y perfil, do's & don'ts, ejemplos prácticos, glosario</td><td><span class="tag tag-high">Completo</span></td></tr>
+      <tr><td style="font-weight:700;">Guía de Email para Afiliados</td><td>Buenas prácticas, formatos, horarios, segmentos y ritmo semanal para el canal email</td><td><span class="tag tag-high">Completo</span></td></tr>
+      <tr><td style="font-weight:700;">Análisis de Onboarding Email</td><td>Diagnóstico de los 5 emails actuales, métricas, problemas, propuesta de nueva secuencia y matriz de priorización</td><td><span class="tag tag-high">Completo</span></td></tr>
+      <tr><td style="font-weight:700;">One-Pager del Programa</td><td>Resumen visual de una página con beneficios, perfiles, comisiones y CTA</td><td><span class="tag tag-high">Completo</span></td></tr>
+      <tr><td style="font-weight:700;">Calendario de Comunicaciones WPP</td><td>Planificación semanal de Anuncios y Networking para marzo 2026</td><td><span class="tag tag-high">Completo</span></td></tr>
+      <tr><td style="font-weight:700;">Calendario de Email + Sheets</td><td>CSVs para Google Sheets: email, WPP, banco de temas, métricas, flujos Treble</td><td><span class="tag tag-high">Completo</span></td></tr>
+      <tr><td style="font-weight:700;">Banco de respuestas WPP</td><td>Mensajes prediseñados por tipo de consulta: programa, perfiles, derivaciones, consultas frecuentes</td><td><span class="tag tag-med">En progreso</span></td></tr>
+      <tr><td style="font-weight:700;">Registro de consultas WPP</td><td>Log de consultas 1:1 con perfil, acción tomada, resultado y notas</td><td><span class="tag tag-med">En progreso</span></td></tr>
+      <tr><td style="font-weight:700;">Seguimiento de mejoras (Sheet)</td><td>Tablero de seguimiento con estado, % avance, próximo paso y notas por cada oportunidad de este documento</td><td><span class="tag tag-med">En progreso</span></td></tr>
+      <tr><td style="font-weight:700;">Presentaciones Programa de Afiliados</td><td>Presentación madre (12 slides) + 5 variantes por perfil (Mentores, Ferias, Agencias, Influencers, Comunidades). Incluye comisiones por plan, beneficios con códigos, y CTAs</td><td><span class="tag tag-high">Completo</span></td></tr>
+      <tr><td style="font-weight:700;">Borrador Programa de Lealtad</td><td>Propuesta de programa Loyalty con categorías (Platinum/Gold/Silver), desafíos, placas de reconocimiento y mecánica de ranking</td><td><span class="tag tag-low">Pendiente</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <p><strong>📊 Seguimiento en vivo:</strong> El avance de cada oportunidad se trackea en tiempo real en <a href="https://docs.google.com/spreadsheets/d/1ahGRZcJk3rABQ_RsDvaerKZu-nnT3Vf7QIRDmzcadc8/edit?gid=0#gid=0" style="color:var(--blue); font-weight:700;">este Google Sheet</a>. Este documento se actualiza periódicamente en base al estado del sheet.</p>
+  </div>
+</div>
+
+<div class="footer">
+  Análisis de Procesos y Oportunidades de Mejora · Programa de Afiliados Tiendanube · Febrero 2026 · Actualizado 23/02/2026
+</div>
+
+<a href="#" class="back-top" id="backTop" aria-label="Volver arriba" title="Volver arriba">&#8593;</a>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.section table, .cover table').forEach(function(t) {
+    if (t.parentElement.classList.contains('table-wrap')) return;
+    var w = document.createElement('div');
+    w.className = 'table-wrap';
+    t.parentNode.insertBefore(w, t);
+    w.appendChild(t);
+  });
+
+  var btn = document.getElementById('backTop');
+  window.addEventListener('scroll', function() {
+    btn.classList.toggle('visible', window.scrollY > 400);
+  });
+
+  var toggle = document.createElement('button');
+  toggle.className = 'nav-toggle';
+  toggle.setAttribute('aria-label', 'Menu');
+  toggle.innerHTML = '&#9776;';
+  var navInner = document.querySelector('.nav-inner');
+  var navLinks = document.querySelector('.nav-links');
+  navInner.appendChild(toggle);
+  toggle.addEventListener('click', function() {
+    navLinks.classList.toggle('open');
+  });
+  navLinks.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() { navLinks.classList.remove('open'); });
+  });
+});
+</script>
+
+</body>
+</html>
